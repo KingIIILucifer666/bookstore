@@ -1,0 +1,7 @@
+node_modules
+dist
+tmp
+.nx
+.git
+docker-compose.yml
+Dockerfile

@@ -8,6 +8,10 @@ out-tsc
 # dependencies
 node_modules
 
+# Environment Variables
+.env
+.env*
+
 # IDEs and editors
 /.idea
 .project
@@ -18,6 +22,7 @@ node_modules
 *.sublime-workspace
 
 # IDE - VSCode
+.vscode/
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
