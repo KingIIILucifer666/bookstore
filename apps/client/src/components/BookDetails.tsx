@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Book, ErrorResponse } from '../utils/types';
 import http from '../utils/http';
 import { AxiosError } from 'axios';
@@ -12,31 +12,23 @@ const BookDetails = () => {
   const [error, setError] = useState<string>('');
   const { id } = useParams();
   const { isLoggedIn, authUser } = useAuth();
-  const router = useNavigate();
-
   const fetchFavorites = async () => {
-    if (!isLoggedIn || !authUser) {
-      router('/');
-      return;
-    } else {
-      try {
-        const response = await http.get('/favorites', {
-          headers: {
-            Authorization: `Bearer ${authUser.token}`,
-          },
-        });
-        const userFavt: Book[] = response.data;
-        console.log(userFavt);
-        userFavt.find((book: Book) => book._id === id) && setIsFavt(true);
-      } catch (error) {
-        const axiosError = error as AxiosError<ErrorResponse>;
-        setError(axiosError.response?.data?.message || 'Failed to fetch books');
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      const response = await http.get('/favorites', {
+        headers: {
+          Authorization: `Bearer ${authUser?.token}`,
+        },
+      });
+      const userFavt: Book[] = response.data;
+      console.log(userFavt);
+      userFavt.find((book: Book) => book._id === id) && setIsFavt(true);
+    } catch (error) {
+      const axiosError = error as AxiosError<ErrorResponse>;
+      setError(axiosError.response?.data?.message || 'Failed to fetch books');
+    } finally {
+      setIsLoading(false);
     }
   };
-  fetchFavorites();
 
   const removeFromFavourite = async () => {
     if (!authUser || !authUser.token) return;
@@ -75,7 +67,9 @@ const BookDetails = () => {
       try {
         const response = await http.get(`/books/${id}`);
         setBook(response.data);
-        console.log(response);
+        if (authUser) {
+          fetchFavorites();
+        }
       } catch (error) {
         const err = error as AxiosError;
         setError(err.message);
@@ -91,21 +85,29 @@ const BookDetails = () => {
   if (!book) return <div className="text-center">No Book Found :(</div>;
 
   return (
-    <section className="flex flex-col lg:flex-row justify-center items-center h-[calc(100vh-60px)] gap-6 px-40">
-      <div className="image-container">
-        <img src={book.image} alt={book.title} height={800} width={800} />
+    <section className="flex flex-col lg:flex-row justify-center items-center min-h-[calc(100vh-60px)] gap-6 px-4 sm:px-8 md:px-16 lg:px-24 xl:px-40 py-10">
+      <div className="w-full lg:w-1/2 flex justify-center">
+        <img
+          src={book.image}
+          alt={book.title}
+          className="w-full max-w-md lg:max-w-xl object-contain rounded-lg shadow-md"
+        />
       </div>
-      <div className="flex flex-col justify-start items-start gap-2 ">
-        <h1 className="text-5xl font-bold mb-6">{book.title}</h1>
-        <p>{book.genre}</p>
-        <p>{book.author}</p>
-        <p className="text-2xl italic mt-6">{book.description}</p>
+      <div className="w-full lg:w-1/2 flex flex-col justify-start items-start gap-2">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+          {book.title}
+        </h1>
+        <p className="text-gray-600">{book.genre}</p>
+        <p className="text-gray-700">{book.author}</p>
+        <p className="text-lg sm:text-xl lg:text-2xl italic mt-4">
+          {book.description}
+        </p>
         {isLoggedIn && (
           <button
             onClick={isFavt ? removeFromFavourite : addToFavourite}
-            className="bg-gray-500 p-2 text-white rounded-lg w-[50%] mt-4 hover:bg-blue-500"
+            className="bg-gray-700 text-white px-4 py-2 rounded-lg mt-6 hover:bg-blue-500 transition w-full sm:w-1/2"
           >
-            {isFavt ? 'Remove from favourite' : 'Add to Favorite'}
+            {isFavt ? 'Remove from Favourite' : 'Add to Favourite'}
           </button>
         )}
       </div>
