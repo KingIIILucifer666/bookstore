@@ -1,8 +1,9 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../dist/out-tsc",
-    "module": "commonjs",
+    "baseUrl": ".",
+    "outDir": "../dist/out-tsc",
+    "module": "nodenext",
     "types": [
       "jest",
       "node",

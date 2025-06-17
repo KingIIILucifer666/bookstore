@@ -25,4 +25,4 @@ app.use('/api/books', bookRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/favorites', favoriteRoutes);
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => (`Server running on port ${PORT}`));
