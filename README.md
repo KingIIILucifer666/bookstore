@@ -1,109 +1,282 @@
-# Bookstore
+# 📚 MahiGaming Full-Stack Bookstore App
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A full-stack online bookstore application built with **React**, **Express**, **MongoDB**, and **Nx Monorepo**, fully **Dockerized** for easy local development and deployment.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## 🚀 Features
 
-## Generate a library
+- 🔐 **User Authentication** (JWT-based)
+- 📚 **Book Management** (CRUD)
+- ⭐ **Favorites List** (Add/Remove/View favorites)
+- 🐳 **Docker Compose** setup for MongoDB, Client, and Server
+- 🏗️ **Nx Monorepo** structure with shared libs and components
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
-```
+---
 
-## Run tasks
-
-To build the library use:
-
-```sh
-npx nx build pkg1
-```
-
-To run any task with Nx use:
-
-```sh
-npx nx <target> <project-name>
-```
-
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## 📁 Folder Structure
 
 ```
-npx nx release
+bookstore/
+├── apps/
+│   ├── client/         → React frontend app
+│   └── server/         → Express backend API
+├── libs/               → Shared utils and types
+├── shared-components/  → Reusable UI components
+├── docker/             → Docker & docker-compose files
+├── .nx/                → Nx config/cache
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+---
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🧪 Tech Stack
 
-## Keep TypeScript project references up to date
+- **Frontend:** React 18, Tailwind CSS, React Router, Context API
+- **Backend:** Express, Mongoose, JWT Auth
+- **Database:** MongoDB
+- **Tooling:** Nx, Docker, TypeScript, Vite, ESLint/Prettier
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+---
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+## 🧰 Setup Instructions
 
-```sh
-npx nx sync
+### 📦 Local Development (Nx Dev Mode)
+
+```bash
+# Install dependencies
+npm install
+
+# Start frontend and backend
+nx serve client
+nx serve server
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+### 🐳 Docker Setup
 
-```sh
-npx nx sync:check
+```bash
+cd docker
+docker-compose build --no-cache
+docker-compose up
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+Server → http://localhost:5000  
+Client → http://localhost:4200  
+MongoDB → mongodb://mongo:27017/bookstore
 
-## Set up CI!
+---
 
-### Step 1
+## 🔑 Environment Variables
 
-To connect to Nx Cloud, run the following command:
+Create a `.env` file in the root or server folder:
 
-```sh
-npx nx connect
+```env
+MONGO_URI=mongodb://mongo:27017/bookstore
+JWT_SECRET=yourSecretKey
 ```
 
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
+---
 
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+## 🖼️ Frontend Overview
 
-### Step 2
+- **Global State:** Managed using `React Context API` for authentication state.
+- **Token Handling:** JWT token is stored in `localStorage` and synced in state.
+- **Routing:** `React Router` handles navigation and protected routes.
+- **Styling:** Tailwind CSS is used for modern responsive UI.
+- **Pages:** Includes Login, Register, Book List, Book Details, and Favorites (protected).
+- **Protected UI:** Conditionally renders UI based on auth state.
+- **Axios Setup:** Centralized Axios instance can be configured with interceptors for JWT.
 
-Use the following command to configure a CI workflow for your workspace:
+---
 
-```sh
-npx nx g ci-workflow
+## 📡 API Endpoints
+
+### 🔐 Auth Routes
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+### 👤 User Routes
+
+- `GET /api/user/:id`
+- `PUT /api/user/:id`
+- `DELETE /api/user/:id`
+
+### 📚 Book Routes
+
+- `GET /api/books`
+- `GET /api/books/:id`
+- `POST /api/books`
+- `PUT /api/books/:id`
+- `DELETE /api/books/:id`
+
+### ⭐ Favorites Routes (Protected)
+
+- `GET /api/favorites`
+- `POST /api/favorites/:bookId`
+- `DELETE /api/favorites/:bookId`
+
+---
+
+## 🧠 Design Decisions
+
+- 🔄 **Separation of Concerns**  
+  Favorites are stored in a separate collection (`favorites`) to allow better indexing, easier scalability, and cleaner relational design.
+
+- 🧱 **Monorepo via Nx**  
+  Streamlines builds, enforces boundaries between apps/libs, and scales efficiently with shared dependencies.
+
+- 🐋 **Docker First**  
+  Enables consistent local environments across machines with full-stack setup.
+
+---
+
+## 🏁 Final Notes
+
+This project showcases a scalable, modular, and production-grade setup for a full-stack application.
+
+> Last updated: June 17, 2025
+
+---
+
+Feel free to customize, extend features, or add UI polish!
+# 📚 MahiGaming Full-Stack Bookstore App
+
+A full-stack online bookstore application built with **React**, **Express**, **MongoDB**, and **Nx Monorepo**, fully **Dockerized** for easy local development and deployment.
+
+---
+
+## 🚀 Features
+
+- 🔐 **User Authentication** (JWT-based)
+- 📚 **Book Management** (CRUD)
+- ⭐ **Favorites List** (Add/Remove/View favorites)
+- 🐳 **Docker Compose** setup for MongoDB, Client, and Server
+- 🏗️ **Nx Monorepo** structure with shared libs and components
+
+---
+
+## 📁 Folder Structure
+
+```
+bookstore/
+├── apps/
+│   ├── client/         → React frontend app
+│   └── server/         → Express backend API
+├── libs/               → Shared utils and types
+├── shared-components/  → Reusable UI components
+├── docker/             → Docker & docker-compose files
+├── .nx/                → Nx config/cache
 ```
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Install Nx Console
+## 🧪 Tech Stack
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+- **Frontend:** React 18, Tailwind CSS, React Router, Context API
+- **Backend:** Express, Mongoose, JWT Auth
+- **Database:** MongoDB
+- **Tooling:** Nx, Docker, TypeScript, Vite, ESLint/Prettier
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Useful links
+## 🧰 Setup Instructions
 
-Learn more:
+### 📦 Local Development (Nx Dev Mode)
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+# Install dependencies
+npm install
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+# Start frontend and backend
+nx serve client
+nx serve server
+```
+
+### 🐳 Docker Setup
+
+```bash
+cd docker
+docker-compose build --no-cache
+docker-compose up
+```
+
+Server → http://localhost:5000  
+Client → http://localhost:4200  
+MongoDB → mongodb://mongo:27017/bookstore
+
+---
+
+## 🔑 Environment Variables
+
+Create a `.env` file in the root or server folder:
+
+```env
+MONGO_URI=mongodb://mongo:27017/bookstore
+JWT_SECRET=yourSecretKey
+```
+
+---
+
+## 🖼️ Frontend Overview
+
+- **Global State:** Managed using `React Context API` for authentication state.
+- **Token Handling:** JWT token is stored in `localStorage` and synced in state.
+- **Routing:** `React Router` handles navigation and protected routes.
+- **Styling:** Tailwind CSS is used for modern responsive UI.
+- **Pages:** Includes Login, Register, Book List, Book Details, and Favorites (protected).
+- **Protected UI:** Conditionally renders UI based on auth state.
+- **Axios Setup:** Centralized Axios instance can be configured with interceptors for JWT.
+
+---
+
+## 📡 API Endpoints
+
+### 🔐 Auth Routes
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+### 👤 User Routes
+
+- `GET /api/user/:id`
+- `PUT /api/user/:id`
+- `DELETE /api/user/:id`
+
+### 📚 Book Routes
+
+- `GET /api/books`
+- `GET /api/books/:id`
+- `POST /api/books`
+- `PUT /api/books/:id`
+- `DELETE /api/books/:id`
+
+### ⭐ Favorites Routes (Protected)
+
+- `GET /api/favorites`
+- `POST /api/favorites/:bookId`
+- `DELETE /api/favorites/:bookId`
+
+---
+
+## 🧠 Design Decisions
+
+- 🔄 **Separation of Concerns**  
+  Favorites are stored in a separate collection (`favorites`) to allow better indexing, easier scalability, and cleaner relational design.
+
+- 🧱 **Monorepo via Nx**  
+  Streamlines builds, enforces boundaries between apps/libs, and scales efficiently with shared dependencies.
+
+- 🐋 **Docker First**  
+  Enables consistent local environments across machines with full-stack setup.
+
+---
+
+## 🏁 Final Notes
+
+This project showcases a scalable, modular, and production-grade setup for a full-stack application.
+
+> Last updated: June 17, 2025
+
+---
+
+Feel free to customize, extend features, or add UI polish!
